@@ -112,7 +112,6 @@ func (s *Shell) help(input string) {
 
 	lPad := strings.Repeat(" ", longest+2)
 	lPad2 := strings.Repeat(" ", longest+6)
-	lPad3 := strings.Repeat(" ", longest)
 	for _, v := range cmdOrdered {
 		padding := longest - len(v.name) + 1
 		v.desc = strings.Replace(v.desc, "\n", "\n"+lPad, -1)
@@ -120,7 +119,7 @@ func (s *Shell) help(input string) {
 		pad := strings.Repeat(" ", padding)
 		var out string
 		if v.usage != "" {
-			out = fmt.Sprintf("%s:%s%s\n\t%susage: %s\n", v.name, pad, v.desc, lPad3, v.usage)
+			out = fmt.Sprintf("%s:%s%s\n%susage: %s\n", v.name, pad, v.desc, lPad2, v.usage)
 		} else {
 			out = fmt.Sprintf("%s:%s%s\n", v.name, pad, v.desc)
 		}
