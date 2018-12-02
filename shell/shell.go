@@ -239,7 +239,7 @@ images will be stored in DOWNLOAD_DIR.
 relative file paths are relative to the path provided to -wrkdir.
 NOTE: using this command may prompt the target set for webcam access. 
 the target set may reject the prompt, or ignore it entirely.`,
-		usage: `\ws DOWNLOAD_DIR
+		usage: `\ws [DOWNLOAD_DIR]
 examples:
     \wcs /tmp/webcam_snaps
     \wcs snaps`,

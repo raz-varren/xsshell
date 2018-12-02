@@ -128,7 +128,7 @@ xsshell >              images will be stored in DOWNLOAD_DIR.
 xsshell >              relative file paths are relative to the path provided to -wrkdir.
 xsshell >              NOTE: using this command may prompt the target set for webcam access. 
 xsshell >              the target set may reject the prompt, or ignore it entirely.
-xsshell >                  usage: \ws DOWNLOAD_DIR
+xsshell >                  usage: \ws [DOWNLOAD_DIR]
 xsshell >                  examples:
 xsshell >                      \wcs /tmp/webcam_snaps
 xsshell >                      \wcs snaps
