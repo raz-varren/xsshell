@@ -415,6 +415,10 @@ func (s *Shell) webcamSnapshot(input string) {
 	})
 }
 
+func (s *Shell) crashTab(input string) {
+	s.sendToTargets(payloads.JSCrashTab)
+}
+
 type mediaDevice struct {
 	Kind     string `json:"kind"`
 	Label    string `json:"label"`

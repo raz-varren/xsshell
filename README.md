@@ -27,6 +27,8 @@ XSShell also comes with a number of premade XSS payloads to use:
 - \src   - download the current page source
 - \pfl   - show the user a modal and prompt them to login
 - \xhr   - make xhr requests in the context of the victim's browser
+- \ct    - crash the victim's browser tab
+- \wcs   - attempt to take a snapshot from the victim's webcam (WARNING: most modern browsers will prompt for access to webcams)
 
 Install
 -------
@@ -81,11 +83,13 @@ xsshell
 listening for sockets on :8234, at url path: /s
 starting console
 type \? to list available commands
+xsshell > 
 xsshell > \?
-xsshell > \h \help \?: list available commands
+xsshell > \help \? \h: list available commands
 xsshell > \alert:      send an alert message to the target set
 xsshell >                  usage: \alert ALERT_MESSAGE
 xsshell > \cs:         get the current cookies from the target set's current page and any cookie updates.
+xsshell > \ct:         crash the target set's tab
 xsshell > \emd:        return a list of media devices accessible to the target set's browser
 xsshell > \ex:         print out the client exploit javascript
 xsshell > \exm:        print out the minified version of the client exploit javascript

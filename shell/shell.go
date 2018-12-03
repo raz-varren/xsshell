@@ -246,6 +246,11 @@ examples:
 		run: s.webcamSnapshot,
 	}
 
+	cmdCrashTab := &cmd{
+		desc: `crash the target set's tab`,
+		run:  s.crashTab,
+	}
+
 	//build command list
 	s.cmds[`\ex`] = cmdExploit
 	s.cmds[`\exm`] = cmdExploitMin
@@ -267,6 +272,7 @@ examples:
 	s.cmds[`\pfl`] = cmdPromptForLogin
 	s.cmds[`\emd`] = cmdEnumerateMediaDevices
 	s.cmds[`\wcs`] = cmdWebcamSnapshot
+	s.cmds[`\ct`] = cmdCrashTab
 
 	go s.drainBuffer()
 	go s.startConsole()
